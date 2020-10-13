@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <input id="int" type="text">
+
+    <form action="javascript:;" method="post" id="registSubmit">
+        用户名称：<input type="text" name="name"> <br />
+        手机号：<input type="text" name="phone"> <br />
+        email：<input type="text" name="email"> <br />
+        头像：<input type="text" name="head_img"> <br />
+        生日：<input type="text" name="birthday"> <br />
+        简介：<input type="text" name="introduce"> <br />
+        真实姓名：<input type="text" name="realName"> <br />
+        职位：<input type="text" name="position"> <br />
+        行业：<input type="text" name="industry"> <br />
+        公司：<input type="text" name="company"> <br />
+        学历：<input type="text" name="record"> <br />
+
+        <button id="sub">提交</button>
+    </form>
+
+    <div id="box"></div>
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+
+        $.ajax({
+            url: 'http://127.0.0.1:3000/users/vertify',
+            type: 'post',
+            data: {
+                username:'admin',
+                password:'12'
+            },
+            headers: {
+                    "token": 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiMSIsInVzZXJfaWQiOiIxMjMiLCJpYXQiOjE1OTk1ODI1MzAsImV4cCI6MTU5OTU4MjU2Nn0.ZbZfCPjw9SgwlRCDlc-soNn9u0cZec7iw-jncByWkmg'//此处放置请求到的用户token
+                },
+            success: res => {
+                console.log(res);
+            }
+        })
+
+        $('#int').on('input', function () {
+            console.log($(this).val());
+            $.ajax({
+                url: 'http://127.0.0.1:3000/users?page=1&count=10',
+                type: 'get',
+                headers: {
+                    "token": 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiMSIsInVzZXJfaWQiOiIxMjMiLCJpYXQiOjE1OTk1ODI1MzAsImV4cCI6MTU5OTU4MjU2Nn0.ZbZfCPjw9SgwlRCDlc-soNn9u0cZec7iw-jncByWkmg'//此处放置请求到的用户token
+                },
+                data: {
+                    phone: $(this).val()
+                },
+                success: res => {
+                    console.log(res);
+                    $("#box").text(JSON.stringify(res))
+                }
+            })
+        })
+
+        $('#sub').click(function () {
+
+            $.ajax({
+                url: 'https://api.apiopen.top/getImages',
+                headers:{
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJ1c2VyX2lkIjoiMTIiLCJpYXQiOjE1OTk4OTEyMDYsImV4cCI6MTU5OTg5MTI0Mn0.LMtKVVkaGUi8zDA3M59TD0sqT2GExMlkPv6AQjQRlu8',
+                    shabi:'123'
+                },
+                contentType: "application/x-www-form-urlencoded",
+                type: 'post',
+                data: $('#registSubmit').serializeArray(),
+                success: res => {
+                    console.log(res);
+                }
+            })
+        })
+
+
+
+        let arr = [{
+            name: '1',
+            age: '1'
+        }]
+
+
+
+        console.log({ ...arr });
+    </script>
+</body>
+
+</html>
