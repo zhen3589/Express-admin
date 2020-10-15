@@ -9,13 +9,15 @@ var expressJwt = require('express-jwt');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
+var areaRouter = require('./routes/area');
+var viewRouter = require('./routes/view');
 
 var app = express();
 
 
-app.all('*', function (req, res, next) {
+app.all('*', function(req, res, next) {
 
-    res.header("Access-Control-Allow-Origin", "*");//项目上线后改成页面的地址
+    res.header("Access-Control-Allow-Origin", "*"); //项目上线后改成页面的地址
 
     res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
 
@@ -70,15 +72,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 //     ]//除了这个地址，其他的URL都需要验证
 // }));
 
-const cors = require('cors');  
-app.use(cors({  
-    origin:['http://localhost:8080','http://127.0.0.1:3000'],
-    methods:['GET','POST','DELETE'],
+const cors = require('cors');
+app.use(cors({
+    origin: ['http://localhost:8080', 'http://127.0.0.1:3000'],
+    methods: ['GET', 'POST', 'DELETE'],
 }));
 
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/users', usersRouter);
+app.use('/area', areaRouter);
+app.use('/view', viewRouter);
 
 //当token失效返回提示信息
 // app.use(function (err, req, res, next) {
@@ -93,7 +97,7 @@ app.use('/users', usersRouter);
 // });
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     next(createError(404));
 });
 
@@ -101,7 +105,7 @@ app.use(function (req, res, next) {
 
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

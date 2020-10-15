@@ -5,14 +5,14 @@ var db = require('../db/db.js')
 
 // 生成token
 
-router.post('/admin', function (req, res, next) {
+router.post('/admin', function(req, res, next) {
 
     let { username, password } = req.body;
     console.log(username);
 
     let sql = `SELECT id,username,password,realName FROM admin_user WHERE username='${username}'`;
 
-    db.query(sql, function (err, result) {
+    db.query(sql, function(err, result) {
         if (!err) {
 
             if (result.length > 0) {
@@ -22,16 +22,16 @@ router.post('/admin', function (req, res, next) {
                             code: 200,
                             token: data,
                             user: {
-                                id:result[0].id,
-                                username:result[0].username,
-                                realName:result[0].realName
+                                id: result[0].id,
+                                username: result[0].username,
+                                realName: result[0].realName
                             }
                         });
                     })
                 } else {
                     res.json({
                         code: 404,
-                        msg: '用户密码错误'
+                        msg: '用户或密码错误'
                     })
                 }
             } else {
