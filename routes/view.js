@@ -2,30 +2,120 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db/db.js')
 var connmt = require('../public/js/utlit.js');
+var uuid = require('node-uuid');
 
 
 // 获取视频列表
 router.get('/getViewList', function(req, res) {
 
-    let { pid, type } = req.query;
-    let sql = `SELECT * FROM view`;
+            let { page, count, startTiem, endTiem, state } = req.query;
 
-    db.query(sql, function(err, result) {
+            let start = 0;
+            if (page > 1) {
+                start = (page - 1) * count; //页码减去1，乘以条数就得到分页的起始数了
+            }
+
+            let sql = `SELECT * FROM view WHERE 1=1 
+                ${startTiem == undefined || endTiem == undefined ? '' : `and releaseTime >= '${startTiem}' and releaseTime <= '${endTiem}'`}
+                ${state == null || state == '' ? '' : `and shelf = '${state}'`}
+                LIMIT ${start},${count}`;
+
+    let total = `SELECT COUNT(1) AS total FROM view WHERE 1=1 
+                ${startTiem == undefined || endTiem == undefined ? '' : `and releaseTime >= '${startTiem}' and releaseTime <= '${endTiem}'`}
+                ${state == null || state == '' ? '' : `and shelf = '${state}'`}`;
+
+    db.query(sql, function (err, result) {
+        db.query(total, function (total_err, total) {
+            if (!err && !total_err) {
+
+                result.forEach(item => {
+                    item['releaseTime'] = connmt.FormatTime('yyyy-MM-dd hh:mm:ss', item.releaseTime)
+                });
+                res.json({
+                    code: 200,
+                    data: result,
+                    total: total[0].total,
+                    msg: '成功'
+                })
+            } else {
+                res.json({
+                    code: 405,
+                    msg: '失败'
+                })
+            }
+        })
+    })
+})
+
+// 添加视频
+router.post('/addView', function (req, res) {
+    let { title, introduction, coverBase, viewFileUrl, file_type } = req.body;
+    let sql = `INSERT INTO view (id,title,introduction,coverBase,viewFileUrl,file_type,releaseTime) 
+    VALUES 
+    ('${uuid.v1()}','${title}','${introduction}','${coverBase}','${viewFileUrl}','${file_type}','${connmt.getDate().items}')`;
+
+    console.log(sql);
+
+    db.query(sql, function (err, result) {
 
         if (!err) {
+            if (!err) {
 
-            result.forEach(item => {
-                item['releaseTime'] = connmt.FormatTime('yyyy-MM-dd hh:mm:ss', item.releaseTime)
-            });
+                res.json({
+                    code: 200,
+                    msg: '成功'
+                })
+            } else {
+                res.json({
+                    code: 405,
+                    msg: '失败'
+                })
+            }
+        }
+
+        res.json({
+            code: 405,
+            msg: sql
+        })
+    })
+})
+
+// 停用&&启用
+router.post('/isenable', function (req, res) {
+
+    let { id, states } = req.body;
+
+    let sql = `UPDATE view SET shelf="${states}" WHERE id="${id}"`
+    db.query(sql, function (err, result) {
+        if (!err) {
             res.json({
                 code: 200,
-                data: result,
                 msg: '成功'
             })
         } else {
             res.json({
-                code: 200,
+                code: 405,
                 msg: '失败'
+            })
+        }
+    })
+})
+
+// 删除视频
+router.delete('/deleteVideo/:id',function(req,res) {
+    let id = req.params.id;
+    let sql = `DELETE FROM view WHERE id='${id}'`;
+
+    db.query(sql,function(err,result) {
+        if(!err) {
+            res.json({
+                code:200,
+                msg:'删除成功'
+            })
+        }else {
+            res.json({
+                code:405,
+                msg:'删除失败'
             })
         }
     })
