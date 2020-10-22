@@ -31,7 +31,7 @@ router.post('/admin', function(req, res, next) {
                 } else {
                     res.json({
                         code: 404,
-                        msg: '用户或密码错误'
+                        msg: '用户密码错误'
                     })
                 }
             } else {

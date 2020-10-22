@@ -55,7 +55,7 @@ router.get('/', function(req, res, next) {
                     item['registeredDate'] = connmt.FormatTime('yyyy-MM-dd hh:mm:ss', item.registeredDate)
                 });
 
-                res.json({
+                return res.json({
                     code: 200,
                     data: {
                         list: result,
@@ -64,7 +64,7 @@ router.get('/', function(req, res, next) {
                     msg: '成功'
                 })
             } else {
-                res.json({
+                return res.json({
                     code: 405,
                     msg: '网络不稳定，稍后再试',
                     err
