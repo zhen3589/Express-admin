@@ -76,29 +76,21 @@ router.post('/editVideoType', (req, res) => {
 router.delete('/deleteVideoType/:id', (req, res) => {
     let id = req.params.id;
     let file_type = req.query.file_type;
-    let sql = `DELETE FROM video_class WHERE id=${id} and file_type='${file_type}'`;
+    let sql = `DELETE FROM video_class WHERE id=${id}`;
 
-    console.log('81');
-    console.log(path.join(__dirname, '1603090310253-190204084208765161.mp4'));
-
-    fs.unlink('uploads/video/1603090363941-big_buck_bunny.mp4', (err) => {
-        if (err) throw err;
-        console.log('已成功地删除文件');
-    });
-
-    // db.query(sql, (err, result) => {
-    //     if (!err) {
-    //         res.json({
-    //             code: 200,
-    //             msg: '成功'm
-    //         })
-    //     } else {
-    //         res.json({
-    //             code: 200,
-    //             msg: '失败'
-    //         })
-    //     }
-    // })
+    db.query(sql, (err, result) => {
+        if (!err) {
+            res.json({
+                code: 200,
+                msg: '成功'
+            })
+        } else {
+            res.json({
+                code: 200,
+                msg: '失败'
+            })
+        }
+    })
 })
 
 

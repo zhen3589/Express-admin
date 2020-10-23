@@ -34,14 +34,14 @@ router.get('/getViewList', function(req, res) {
                 result.forEach(item => {
                     item['releaseTime'] = connmt.FormatTime('yyyy-MM-dd hh:mm:ss', item.releaseTime)
                 });
-                res.json({
+                return res.json({
                     code: 200,
                     data: result,
                     total: total[0].total,
                     msg: '成功'
                 })
             } else {
-                res.json({
+                return res.json({
                     code: 405,
                     msg: '失败'
                 })
@@ -100,6 +100,11 @@ router.get('/getVideoInformation/:id', (req, res) => {
         }
     })
 })
+
+// 移动端获取视频详情
+// router.get('/',(req,res)=>{
+
+// })
 
 // 编辑视频信息
 router.post('/editVideoInformation', (req, res) => {

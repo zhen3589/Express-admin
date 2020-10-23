@@ -13,6 +13,8 @@ var viewRouter = require('./routes/view');
 var uploadFileRouter = require('./routes/uploadFile');
 var video_classRouter = require('./routes/video_class');
 const jwtUnless = require('./jwt_unless') //用于判断是否需要jwt验证
+const history = require('connect-history-api-fallback');
+
 
 var app = express();
 
@@ -37,7 +39,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(history());
+app.use(express.static(path.join(__dirname, 'public/dist')));
 
 // / 解析token获取用户信息
 app.use(function(req, res, next) {
@@ -66,7 +69,9 @@ app.use(expressJwt({ secret: 'mes_qdhd_mobile_xhykjyxgs', algorithms: ['HS256'] 
             //是需要验证token的接口
             return false
         }
+
     }
+
 }));
 // http://127.0.0.1:3000/uploadFile/download/1603260170133-190204084208765161.mp4
 const cors = require('cors');
@@ -75,12 +80,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
 }));
 
-app.use('/', indexRouter);
-app.use('/login', loginRouter);
-app.use('/users', usersRouter);
-app.use('/view', viewRouter);
-app.use('/uploadFile', uploadFileRouter);
-app.use('/videoType', video_classRouter);
+// app.use('/', indexRouter);
+app.use('/api/login', loginRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/view', viewRouter);
+app.use('/api/uploadFile', uploadFileRouter);
+app.use('/api/videoType', video_classRouter);
 
 //当token失效返回提示信息
 app.use(function(err, req, res, next) {

@@ -1,10 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const os = require('os');
+const fs = require('fs');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send('服务器启动成功'+getIPAdress() + ':3000')
+
+    res.sendFile(__dirname + '/public/dist/index.html')
+        //   res.send('服务器启动成功'+getIPAdress() + ':3000')
 });
 
 ///获取本机ip///

@@ -33,11 +33,11 @@ const isNonTokenRegApi = (path) => {
 //判断当前请求api是否不需要jwt验证
 const checkIsNonTokenApi = (ctx) => {
 
-    if ((isNonTokenApi(ctx.path) || isNonTokenRegApi(ctx.path) || ctx.path.substring(0, 21) == '/uploadFile/download/') && ctx.method == 'GET') {
+    if ((isNonTokenApi(ctx.path) || isNonTokenRegApi(ctx.path) || ctx.path.substring(0, 25) == '/api/uploadFile/download/' || ctx.path.substring(0, 14) == '/api/home/img/') && ctx.method == 'GET') {
         return true
     } else {
         // 特殊post接口，不需要验证jwt
-        if (ctx.path == '/login/admin' || ctx.path == 'user/register') {
+        if (ctx.path == '/api/login/admin' || ctx.path == '/') {
             return true
         }
         return false
